@@ -17,9 +17,13 @@ WORKDIR /app
 # Install dumb-init to handle signals properly
 RUN apk add --no-cache dumb-init
 
-# Copy from builder
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package files from builder
 COPY --from=builder /app/package*.json ./
+
+# Install ONLY production dependencies
+RUN npm ci --omit=dev
+
+# Copy application files
 COPY src ./src
 COPY public ./public
 
